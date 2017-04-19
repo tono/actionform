@@ -3,4 +3,8 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'jquery-rails'
-gem 'simple_form'
+
+group :test do
+  gem 'simple_form'
+  gem "rails-controller-testing"
+end

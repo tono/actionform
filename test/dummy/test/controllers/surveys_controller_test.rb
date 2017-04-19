@@ -2,7 +2,7 @@ require 'test_helper'
 
 class SurveysControllerTest < ActionController::TestCase
   fixtures :surveys, :questions, :answers
-  
+
   setup do
     @survey = surveys(:programming)
   end
@@ -20,16 +20,18 @@ class SurveysControllerTest < ActionController::TestCase
 
   test "should create survey" do
     assert_difference('Survey.count') do
-      post :create, survey: {
-        name: "Programming languages",
+      post :create, params: {
+        survey: {
+          name: "Programming languages",
 
-        questions_attributes: {
-          "0" => {
-            content: "Which language allows closures?",
+          questions_attributes: {
+            "0" => {
+              content: "Which language allows closures?",
 
-            answers_attributes: {
-              "0" => { content: "Ruby Programming Language" },
-              "1" => { content: "CSharp Programming Language" },
+              answers_attributes: {
+                "0" => { content: "Ruby Programming Language" },
+                "1" => { content: "CSharp Programming Language" },
+              }
             }
           }
         }
@@ -40,11 +42,11 @@ class SurveysControllerTest < ActionController::TestCase
 
     assert survey_form.valid?
     assert_redirected_to survey_path(assigns(:survey_form))
-    
+
     assert_equal "Programming languages", survey_form.name
-    
+
     assert_equal "Which language allows closures?", survey_form.questions[0].content
-    
+
     assert_equal "Ruby Programming Language", survey_form.questions[0].answers[0].content
     assert_equal "CSharp Programming Language", survey_form.questions[0].answers[1].content
 
@@ -55,31 +57,33 @@ class SurveysControllerTest < ActionController::TestCase
         assert answer.persisted?
       end
     end
-    
+
     assert_equal "Survey: #{survey_form.name} was successfully created.", flash[:notice]
   end
 
   test "should create dynamically added question to a survey" do
     assert_difference('Survey.count') do
-      post :create, survey: {
-        name: "Programming languages",
+      post :create, params: {
+        survey: {
+          name: "Programming languages",
 
-        questions_attributes: {
-          "0" => {
-            content: "Which language allows closures?",
+          questions_attributes: {
+            "0" => {
+              content: "Which language allows closures?",
 
-            answers_attributes: {
-              "0" => { content: "Ruby Programming Language" },
-              "1" => { content: "CSharp Programming Language" },
-            }
-          },
+              answers_attributes: {
+                "0" => { content: "Ruby Programming Language" },
+                "1" => { content: "CSharp Programming Language" },
+              }
+            },
 
-          "12343" => {
-            content: "Which language allows objects?",
+            "12343" => {
+              content: "Which language allows objects?",
 
-            answers_attributes: {
-              "0" => { content: "Ruby Programming Language" },
-              "1" => { content: "C Programming Language" },
+              answers_attributes: {
+                "0" => { content: "Ruby Programming Language" },
+                "1" => { content: "C Programming Language" },
+              }
             }
           }
         }
@@ -90,13 +94,13 @@ class SurveysControllerTest < ActionController::TestCase
 
     assert survey_form.valid?
     assert_redirected_to survey_path(assigns(:survey_form))
-    
+
     assert_equal "Programming languages", survey_form.name
 
     assert_equal 2, survey_form.questions.size
-    
+
     assert_equal "Which language allows closures?", survey_form.questions[0].content
-    
+
     assert_equal "Ruby Programming Language", survey_form.questions[0].answers[0].content
     assert_equal "CSharp Programming Language", survey_form.questions[0].answers[1].content
 
@@ -112,23 +116,25 @@ class SurveysControllerTest < ActionController::TestCase
         assert answer.persisted?
       end
     end
-    
+
     assert_equal "Survey: #{survey_form.name} was successfully created.", flash[:notice]
   end
 
   test "should create dynamically added answer to a question" do
     assert_difference('Survey.count') do
-      post :create, survey: {
-        name: "Programming languages",
+      post :create, params: {
+        survey: {
+          name: "Programming languages",
 
-        questions_attributes: {
-          "0" => {
-            content: "Which language allows closures?",
+          questions_attributes: {
+            "0" => {
+              content: "Which language allows closures?",
 
-            answers_attributes: {
-              "0" => { content: "Ruby Programming Language" },
-              "1" => { content: "CSharp Programming Language" },
-              "12322" => { content: "C Programming Language" }
+              answers_attributes: {
+                "0" => { content: "Ruby Programming Language" },
+                "1" => { content: "CSharp Programming Language" },
+                "12322" => { content: "C Programming Language" }
+              }
             }
           }
         }
@@ -139,13 +145,13 @@ class SurveysControllerTest < ActionController::TestCase
 
     assert survey_form.valid?
     assert_redirected_to survey_path(assigns(:survey_form))
-    
+
     assert_equal "Programming languages", survey_form.name
-    
+
     assert_equal "Which language allows closures?", survey_form.questions[0].content
 
     assert_equal 3, survey_form.questions[0].answers.size
-    
+
     assert_equal "Ruby Programming Language", survey_form.questions[0].answers[0].content
     assert_equal "CSharp Programming Language", survey_form.questions[0].answers[1].content
     assert_equal "C Programming Language", survey_form.questions[0].answers[2].content
@@ -157,22 +163,24 @@ class SurveysControllerTest < ActionController::TestCase
         assert answer.persisted?
       end
     end
-    
+
     assert_equal "Survey: #{survey_form.name} was successfully created.", flash[:notice]
   end
 
   test "should not create survey with invalid params" do
     assert_difference('Survey.count', 0) do
-      post :create, survey: {
-        name: surveys(:programming).name,
+      post :create, params: {
+        survey: {
+          name: surveys(:programming).name,
 
-        questions_attributes: {
-          "0" => {
-            content: nil,
+          questions_attributes: {
+            "0" => {
+              content: nil,
 
-            answers_attributes: {
-              "0" => { content: "Ruby Programming Language" },
-              "1" => { content: nil },
+              answers_attributes: {
+                "0" => { content: "Ruby Programming Language" },
+                "1" => { content: nil },
+              }
             }
           }
         }
@@ -182,7 +190,7 @@ class SurveysControllerTest < ActionController::TestCase
     survey_form = assigns(:survey_form)
 
     assert_not survey_form.valid?
-    
+
     assert_includes survey_form.errors.messages[:name], "has already been taken"
 
     assert_includes survey_form.questions[0].errors.messages[:content], "can't be blank"
@@ -191,30 +199,33 @@ class SurveysControllerTest < ActionController::TestCase
   end
 
   test "should show survey" do
-    get :show, id: @survey
+    get :show, params: {id: @survey}
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @survey
+    get :edit, params: {id: @survey}
     assert_response :success
   end
 
   test "should update survey" do
     assert_difference('Survey.count', 0) do
-      patch :update, id: @survey, survey: {
-        name: "Native languages",
+      patch :update, params: {
+        id: @survey,
+        survey: {
+          name: "Native languages",
 
-        questions_attributes: {
-          "0" => {
-            content: "Which language is spoken in England?",
-            id: questions(:one).id,
+          questions_attributes: {
+            "0" => {
+              content: "Which language is spoken in England?",
+              id: questions(:one).id,
 
-            answers_attributes: {
-              "0" => { content: "The English Language", id: answers(:ruby).id },
-              "1" => { content: "The Latin Language", id: answers(:cs).id },
-            }
-          },
+              answers_attributes: {
+                "0" => { content: "The English Language", id: answers(:ruby).id },
+                "1" => { content: "The Latin Language", id: answers(:cs).id },
+              }
+            },
+          }
         }
       }
     end
@@ -222,14 +233,14 @@ class SurveysControllerTest < ActionController::TestCase
     survey_form = assigns(:survey_form)
 
     assert_redirected_to survey_path(survey_form)
-    
+
     assert_equal "Native languages", survey_form.name
-    
+
     assert_equal "Which language is spoken in England?", survey_form.questions[0].content
-    
+
     assert_equal "The Latin Language", survey_form.questions[0].answers[0].content
     assert_equal "The English Language", survey_form.questions[0].answers[1].content
-    
+
     assert_equal "Survey: #{survey_form.name} was successfully updated.", flash[:notice]
   end
 
@@ -244,28 +255,31 @@ class SurveysControllerTest < ActionController::TestCase
     survey.save
 
     assert_difference('Survey.count', 0) do
-      patch :update, id: survey, survey: {
-        name: "Native languages",
+      patch :update, params: {
+        id: survey,
+        survey: {
+          name: "Native languages",
 
-        questions_attributes: {
-          "0" => {
-            content: "Which language is spoken in England?",
-            id: survey.questions[0].id,
+          questions_attributes: {
+            "0" => {
+              content: "Which language is spoken in England?",
+              id: survey.questions[0].id,
 
-            answers_attributes: {
-              "0" => { content: "The English Language", id: survey.questions[0].answers[0].id },
-              "1" => { content: "The Latin Language", id: survey.questions[0].answers[1].id },
-            }
-          },
+              answers_attributes: {
+                "0" => { content: "The English Language", id: survey.questions[0].answers[0].id },
+                "1" => { content: "The Latin Language", id: survey.questions[0].answers[1].id },
+              }
+            },
 
-          "1" => {
-            content: "Which language is spoken in America?",
-            id: survey.questions[1].id,
-            _destroy: "1",
+            "1" => {
+              content: "Which language is spoken in America?",
+              id: survey.questions[1].id,
+              _destroy: "1",
 
-            answers_attributes: {
-              "0" => { content: "The English Language", id: survey.questions[1].answers[0].id },
-              "1" => { content: "The American Language", id: survey.questions[1].answers[1].id },
+              answers_attributes: {
+                "0" => { content: "The English Language", id: survey.questions[1].answers[0].id },
+                "1" => { content: "The American Language", id: survey.questions[1].answers[1].id },
+              }
             }
           }
         }
@@ -275,16 +289,16 @@ class SurveysControllerTest < ActionController::TestCase
     survey_form = assigns(:survey_form)
 
     assert_redirected_to survey_path(survey_form)
-    
+
     assert_equal "Native languages", survey_form.name
-    
+
     assert_equal "Which language is spoken in England?", survey_form.questions[0].content
 
     assert_equal 1, survey_form.questions.size
-    
+
     assert_equal "The English Language", survey_form.questions[0].answers[0].content
     assert_equal "The Latin Language", survey_form.questions[0].answers[1].content
-    
+
     assert_equal "Survey: #{survey_form.name} was successfully updated.", flash[:notice]
   end
 
@@ -301,29 +315,32 @@ class SurveysControllerTest < ActionController::TestCase
     survey.save
 
     assert_difference('Survey.count', 0) do
-      patch :update, id: survey, survey: {
-        name: "Native languages",
+      patch :update, params: {
+        id: survey,
+        survey: {
+          name: "Native languages",
 
-        questions_attributes: {
-          "0" => {
-            content: "Which language is spoken in England?",
-            id: survey.questions[0].id,
+          questions_attributes: {
+            "0" => {
+              content: "Which language is spoken in England?",
+              id: survey.questions[0].id,
 
-            answers_attributes: {
-              "0" => { content: "The English Language", id: survey.questions[0].answers[0].id },
-              "1" => { content: "The Latin Language", id: survey.questions[0].answers[1].id },
-              "2" => { content: "The French Language", id: survey.questions[0].answers[2].id, _destroy: "1" }
-            }
-          },
+              answers_attributes: {
+                "0" => { content: "The English Language", id: survey.questions[0].answers[0].id },
+                "1" => { content: "The Latin Language", id: survey.questions[0].answers[1].id },
+                "2" => { content: "The French Language", id: survey.questions[0].answers[2].id, _destroy: "1" }
+              }
+            },
 
-          "1" => {
-            content: "Which language is spoken in America?",
-            id: survey.questions[1].id,
+            "1" => {
+              content: "Which language is spoken in America?",
+              id: survey.questions[1].id,
 
-            answers_attributes: {
-              "0" => { content: "The English Language", id: survey.questions[1].answers[0].id },
-              "1" => { content: "The American Language", id: survey.questions[1].answers[1].id },
-              "2" => { content: "The Italian Language", id: survey.questions[1].answers[2].id, _destroy: "1" }
+              answers_attributes: {
+                "0" => { content: "The English Language", id: survey.questions[1].answers[0].id },
+                "1" => { content: "The American Language", id: survey.questions[1].answers[1].id },
+                "2" => { content: "The Italian Language", id: survey.questions[1].answers[2].id, _destroy: "1" }
+              }
             }
           }
         }
@@ -333,31 +350,31 @@ class SurveysControllerTest < ActionController::TestCase
     survey_form = assigns(:survey_form)
 
     assert_redirected_to survey_path(survey_form)
-    
+
     assert_equal "Native languages", survey_form.name
 
     assert_equal 2, survey_form.questions.size
-    
+
     assert_equal "Which language is spoken in England?", survey_form.questions[0].content
 
     assert_equal 2, survey_form.questions[0].answers.size
-    
+
     assert_equal "The English Language", survey_form.questions[0].answers[0].content
     assert_equal "The Latin Language", survey_form.questions[0].answers[1].content
 
     assert_equal "Which language is spoken in America?", survey_form.questions[1].content
 
     assert_equal 2, survey_form.questions[1].answers.size
-    
+
     assert_equal "The English Language", survey_form.questions[1].answers[0].content
     assert_equal "The American Language", survey_form.questions[1].answers[1].content
-    
+
     assert_equal "Survey: #{survey_form.name} was successfully updated.", flash[:notice]
   end
 
   test "should destroy survey" do
     assert_difference('Survey.count', -1) do
-      delete :destroy, id: @survey
+      delete :destroy, params: {id: @survey}
     end
 
     assert_redirected_to surveys_path

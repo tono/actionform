@@ -19,6 +19,7 @@ module ActionForm
     end
 
     def submit(params)
+      params = params.to_h if params.is_a?(ActionController::Parameters)
       params.each do |key, value|
         if parent.persisted?
           create_or_update_record(value)
